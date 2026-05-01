@@ -1,0 +1,139 @@
+Microsoft Windows [Version 10.0.19045.6466]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\admin>py -m pip install flask flask-cors
+Collecting flask
+  Downloading flask-3.1.3-py3-none-any.whl.metadata (3.2 kB)
+Collecting flask-cors
+  Downloading flask_cors-6.0.2-py3-none-any.whl.metadata (5.3 kB)
+Collecting blinker>=1.9.0 (from flask)
+  Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+Collecting click>=8.1.3 (from flask)
+  Downloading click-8.3.3-py3-none-any.whl.metadata (2.6 kB)
+Collecting itsdangerous>=2.2.0 (from flask)
+  Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting jinja2>=3.1.2 (from flask)
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting markupsafe>=2.1.1 (from flask)
+  Downloading markupsafe-3.0.3-cp314-cp314-win_amd64.whl.metadata (2.8 kB)
+Collecting werkzeug>=3.1.0 (from flask)
+  Downloading werkzeug-3.1.8-py3-none-any.whl.metadata (4.0 kB)
+Collecting colorama (from click>=8.1.3->flask)
+  Downloading colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+Downloading flask-3.1.3-py3-none-any.whl (103 kB)
+Downloading flask_cors-6.0.2-py3-none-any.whl (13 kB)
+Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Downloading click-8.3.3-py3-none-any.whl (110 kB)
+Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading markupsafe-3.0.3-cp314-cp314-win_amd64.whl (15 kB)
+Downloading werkzeug-3.1.8-py3-none-any.whl (226 kB)
+Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Installing collected packages: markupsafe, itsdangerous, colorama, blinker, werkzeug, jinja2, click, flask, flask-cors
+   ------------------------------- -------- 7/9 [flask]  WARNING: The script flask.exe is installed in 'C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+Successfully installed blinker-1.9.0 click-8.3.3 colorama-0.4.6 flask-3.1.3 flask-cors-6.0.2 itsdangerous-2.2.0 jinja2-3.1.6 markupsafe-3.0.3 werkzeug-3.1.8
+
+[notice] A new release of pip is available: 26.0.1 -> 26.1
+[notice] To update, run: C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\python.exe -m pip install --upgrade pip
+
+C:\Users\admin>
+C:\Users\admin>python app.py
+C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\python.exe: can't open file 'C:\\Users\\admin\\app.py': [Errno 2] No such file or directory
+
+C:\Users\admin> app.py
+'app.py' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\admin>python app.py
+C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\python.exe: can't open file 'C:\\Users\\admin\\app.py': [Errno 2] No such file or directory
+
+C:\Users\admin>cd C:\Users\admin\govdoc-ai
+
+C:\Users\admin\govdoc-ai>py -m pip install flask flask-cors
+Requirement already satisfied: flask in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (3.1.3)
+Requirement already satisfied: flask-cors in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (6.0.2)
+Requirement already satisfied: blinker>=1.9.0 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (1.9.0)
+Requirement already satisfied: click>=8.1.3 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (8.3.3)
+Requirement already satisfied: itsdangerous>=2.2.0 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (2.2.0)
+Requirement already satisfied: jinja2>=3.1.2 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (3.1.6)
+Requirement already satisfied: markupsafe>=2.1.1 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (3.0.3)
+Requirement already satisfied: werkzeug>=3.1.0 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (3.1.8)
+Requirement already satisfied: colorama in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from click>=8.1.3->flask) (0.4.6)
+
+[notice] A new release of pip is available: 26.0.1 -> 26.1
+[notice] To update, run: C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\python.exe -m pip install --upgrade pip
+
+C:\Users\admin\govdoc-ai>python app.py
+Server starting at http://localhost:5000
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+ * Restarting with stat
+Server starting at http://localhost:5000
+ * Debugger is active!
+ * Debugger PIN: 107-058-084
+127.0.0.1 - - [01/May/2026 14:48:17] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/May/2026 14:48:18] "GET /favicon.ico HTTP/1.1" 404 -
+
+C:\Users\admin\govdoc-ai>
+C:\Users\admin\govdoc-ai>
+C:\Users\admin\govdoc-ai>{
+'{' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\admin\govdoc-ai>  "message": "GovDoc AI is working!"
+'"message":' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\admin\govdoc-ai>}
+
+C:\Users\admin\govdoc-ai>
+
+C:\Users\admin\govdoc-ai>py -m pip install flask flask-cors
+Requirement already satisfied: flask in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (3.1.3)
+Requirement already satisfied: flask-cors in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (6.0.2)
+Requirement already satisfied: blinker>=1.9.0 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (1.9.0)
+Requirement already satisfied: click>=8.1.3 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (8.3.3)
+Requirement already satisfied: itsdangerous>=2.2.0 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (2.2.0)
+Requirement already satisfied: jinja2>=3.1.2 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (3.1.6)
+Requirement already satisfied: markupsafe>=2.1.1 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (3.0.3)
+Requirement already satisfied: werkzeug>=3.1.0 in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from flask) (3.1.8)
+Requirement already satisfied: colorama in C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from click>=8.1.3->flask) (0.4.6)
+
+[notice] A new release of pip is available: 26.0.1 -> 26.1
+[notice] To update, run: C:\Users\admin\AppData\Local\Python\pythoncore-3.14-64\python.exe -m pip install --upgrade pip
+
+C:\Users\admin\govdoc-ai>python app.py
+✅ GovDoc AI Backend starting...
+📍 Open: http://localhost:5000
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+ * Restarting with stat
+✅ GovDoc AI Backend starting...
+📍 Open: http://localhost:5000
+ * Debugger is active!
+ * Debugger PIN: 107-058-084
+127.0.0.1 - - [01/May/2026 14:52:32] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/May/2026 14:52:39] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/May/2026 14:53:31] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/May/2026 14:53:45] "GET /api/status/test HTTP/1.1" 404 -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
