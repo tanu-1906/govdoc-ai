@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-const API = "http://localhost:5000";
-
+const API = "https://govdoc-ai-backend.onrender.com";
 function App() {
   const [page, setPage] = useState("login");
   const [userId, setUserId] = useState("");
