@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-
+import { useState } from "react";
 const API = "https://govdoc-ai-backend.onrender.com";
 
 const COLORS = {
