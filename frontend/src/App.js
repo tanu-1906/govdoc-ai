@@ -840,7 +840,7 @@ export default function App() {
                     { icon: "🍃", name: "MongoDB Atlas", desc: "Database" },
                     { icon: "🤖", name: "AI/ML Engine", desc: "Document Verification" },
                     { icon: "☁️", name: "Render.com", desc: "Backend Hosting" },
-                    { icon: "🚀", name: "Netlify", desc: "Frontend Hosting" },
+                   { icon: "N", name: "Netlify", desc: "Frontend Hosting" },
                   ].map(t => (
                     <div key={t.name} style={{ border: `1px solid #ddd`, borderRadius: 4, padding: 12, textAlign: "center
     <div style={styles.page}>
