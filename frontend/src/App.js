@@ -483,7 +483,99 @@ export default function App() {
   );
 
   // HELP PAGE
-  if (page === "help") return (
+  if (page === "officer") return (
+    <div style={styles.page}>
+      <GovHeader />
+      <div style={styles.main}>
+        {/* Stats Row */}
+        <div style={{ display: "flex", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
+          {[
+            { label: "Pending Review", value: "12", icon: "⏳", color: "#ff9800" },
+            { label: "Approved Today", value: "8", icon: "✅", color: "#4caf50" },
+            { label: "Rejected Today", value: "3", icon: "❌", color: "#f44336" },
+            { label: "Avg AI Score", value: "82%", icon: "🤖", color: COLORS.navyBlue },
+          ].map(stat => (
+            <div key={stat.label} style={{ flex: 1, minWidth: 150, background: "#fff", borderRadius: 8, padding: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.08)", borderTop: `4px solid ${stat.color}` }}>
+              <div style={{ fontSize: 28 }}>{stat.icon}</div>
+              <div style={{ fontSize: 28, fontWeight: "bold", color: stat.color }}>{stat.value}</div>
+              <div style={{ fontSize: 12, color: COLORS.gray }}>{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Applications Table */}
+        <div style={styles.card}>
+          <div style={styles.cardHeader}>🧑‍💼 Officer Dashboard — Pending Applications</div>
+          <div style={styles.cardBody}>
+            {[
+              { id: "APP001", name: "Rahul Sharma", service: "Income Certificate", score: 78, status: "Pending", doc: "Aadhaar, Salary Slip" },
+              { id: "APP002", name: "Priya Patil", service: "Domicile Certificate", score: 91, status: "Auto-Approved", doc: "Aadhaar, Address Proof" },
+              { id: "APP003", name: "Amit Desai", service: "Caste Certificate", score: 65, status: "Pending", doc: "Aadhaar, Caste Proof" },
+              { id: "APP004", name: "Sneha Kulkarni", service: "Birth Certificate", score: 88, status: "Pending", doc: "Hospital Record" },
+              { id: "APP005", name: "Vikram Joshi", service: "Income Certificate", score: 45, status: "Rejected", doc: "Aadhaar (blurry)" },
+            ].map(app => (
+              <div key={app.id} style={{ border: "1px solid #e0e0e0", borderRadius: 8, padding: 16, marginBottom: 16, background: "#fafafa" }}>
+                {/* Top Row */}
+                <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+                  <div>
+                    <span style={{ fontWeight: "bold", color: COLORS.navyBlue, fontSize: 15 }}>{app.name}</span>
+                    <span style={{ marginLeft: 8, fontSize: 12, color: COLORS.gray }}>#{app.id}</span>
+                  </div>
+                  <span style={{
+                    padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: "bold",
+                    background: app.status === "Auto-Approved" ? "#e8f5e9" : app.status === "Rejected" ? "#ffebee" : "#fff3e0",
+                    color: app.status === "Auto-Approved" ? "#4caf50" : app.status === "Rejected" ? "#f44336" : "#ff9800"
+                  }}>{app.status}</span>
+                </div>
+
+                {/* Details */}
+                <div style={{ display: "flex", gap: 24, flexWrap: "wrap", marginBottom: 12, fontSize: 13 }}>
+                  <span>📋 <b>Service:</b> {app.service}</span>
+                  <span>📄 <b>Docs:</b> {app.doc}</span>
+                  <span>🤖 <b>AI Score:</b>
+                    <span style={{
+                      marginLeft: 6, fontWeight: "bold",
+                      color: app.score >= 85 ? "#4caf50" : app.score >= 70 ? "#ff9800" : "#f44336"
+                    }}>{app.score}%</span>
+                  </span>
+                </div>
+
+                {/* AI Score Bar */}
+                <div style={{ background: "#e0e0e0", borderRadius: 4, height: 6, marginBottom: 12 }}>
+                  <div style={{
+                    width: `${app.score}%`, height: 6, borderRadius: 4,
+                    background: app.score >= 85 ? "#4caf50" : app.score >= 70 ? "#ff9800" : "#f44336"
+                  }} />
+                </div>
+
+                {/* Action Buttons */}
+                {app.status === "Pending" && (
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    <button style={{ ...styles.btnPrimary, background: "#4caf50", padding: "8px 16px", fontSize: 13 }}
+                      onClick={() => alert(`✅ APP ${app.id} Approved!`)}>✅ Approve</button>
+                    <button style={{ ...styles.btnPrimary, background: "#f44336", padding: "8px 16px", fontSize: 13 }}
+                      onClick={() => alert(`❌ APP ${app.id} Rejected!`)}>❌ Reject</button>
+                    <button style={{ ...styles.btnPrimary, background: "#ff9800", padding: "8px 16px", fontSize: 13 }}
+                      onClick={() => alert(`📄 Requested more documents for ${app.id}`)}>📄 Request Docs</button>
+                    <button style={{ ...styles.btnPrimary, background: COLORS.navyBlue, padding: "8px 16px", fontSize: 13 }}
+                      onClick={() => {
+                        const comment = prompt(`Add review comment for ${app.id}:`);
+                        if (comment) alert(`💬 Comment saved for ${app.id}: "${comment}"`);
+                      }}>💬 Add Comment</button>
+                    <button style={{ ...styles.btnPrimary, background: "#9c27b0", padding: "8px 16px", fontSize: 13 }}
+                      onClick={() => alert(`👤 ${app.id} assigned to Rajesh Kumar, PMC`)}>👤 Assign Officer</button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button style={styles.btnPrimary} onClick={() => setPage("home")}>← Back to Home</button>
+      </div>
+      <GovFooter />
+    </div>
+  );
     <div style={{ minHeight: "100vh", background: C.light, fontFamily: "Arial, sans-serif" }}>
       <Header />
       <div style={main}>
