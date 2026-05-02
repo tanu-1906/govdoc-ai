@@ -774,5 +774,61 @@ export default function App() {
     </div>
   );
 
+  if (page === "help") return (
+    <div style={styles.page}>
+      <GovHeader />
+      <div style={styles.main}>
+        <div style={styles.card}>
+          <div style={styles.cardHeader}>❓ Help & Support — सहायता केंद्र</div>
+          <div style={styles.cardBody}>
+            {/* FAQ */}
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontWeight: "bold", color: COLORS.navyBlue, fontSize: 16, marginBottom: 12 }}>
+                📋 Frequently Asked Questions
+              </div>
+              {[
+                { q: "How do I apply for a certificate?", a: "Register as a citizen, login, click '+ New Application', select your service, upload documents and run AI verification." },
+                { q: "What documents do I need to upload?", a: "Upload clear scans of Aadhaar card, address proof, and any service-specific documents in PDF, JPG or PNG format." },
+                { q: "How long does verification take?", a: "AI verification is instant. If sent for manual review, officer will process within 3-5 working days." },
+                { q: "What is the AI Confidence Score?", a: "It is a score from 0-100 showing how authentic your documents are. Score above 90% means auto-approved." },
+                { q: "Who is the assigned officer?", a: "If your score is between 75-90%, it is assigned to Rajesh Kumar, Pune Municipal Corporation for manual review." },
+                { q: "Is my data safe?", a: "Yes. All data is encrypted and protected under IT Act 2000 and Personal Data Protection Act." },
+              ].map((faq, i) => (
+                <div key={i} style={{ borderBottom: "1px solid #eee", padding: "12px 0" }}>
+                  <div style={{ fontWeight: "bold", color: COLORS.navyBlue, fontSize: 13, marginBottom: 4 }}>
+                    Q: {faq.q}
+                  </div>
+                  <div style={{ fontSize: 13, color: COLORS.gray }}>
+                    A: {faq.a}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Contact */}
+            <div style={{ background: "#f0f4ff", padding: 16, borderRadius: 4, marginBottom: 16 }}>
+              <div style={{ fontWeight: "bold", color: COLORS.navyBlue, marginBottom: 12 }}>📞 Contact Us</div>
+              {[
+                { icon: "📞", label: "Helpline", value: "1800-111-555 (Toll Free)" },
+                { icon: "📧", label: "Email", value: "support@govdocai.gov.in" },
+                { icon: "🏢", label: "Office", value: "Pune Municipal Corporation, Shivajinagar, Pune - 411005" },
+                { icon: "🕐", label: "Working Hours", value: "Monday to Friday, 9:00 AM to 6:00 PM" },
+              ].map(c => (
+                <div key={c.label} style={{ display: "flex", gap: 12, marginBottom: 8, fontSize: 13 }}>
+                  <span>{c.icon}</span>
+                  <span style={{ color: COLORS.gray, minWidth: 100 }}>{c.label}:</span>
+                  <span style={{ fontWeight: "bold", color: COLORS.navyBlue }}>{c.value}</span>
+                </div>
+              ))}
+            </div>
+
+            <button style={styles.btnPrimary} onClick={() => setPage("home")}>← Back to Home</button>
+          </div>
+        </div>
+      </div>
+      <GovFooter />
+    </div>
+  );
+
   return null;
 }
