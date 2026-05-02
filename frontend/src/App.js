@@ -310,11 +310,18 @@ export default function App() {
 
         {/* Nav bar */}
         <div style={styles.navBar}>
-          {["Home", "Services", "Track Application", "Help & Support", "About"].map(item => (
-            <div key={item} style={styles.navItem}
+         {[
+            { label: "Home", action: () => setPage("home") },
+            { label: "Services", action: () => userId ? setPage("apply") : setPage("login") },
+            { label: "Track Application", action: () => userId ? setPage("dashboard") : setPage("login") },
+            { label: "Help & Support", action: () => setPage("help") },
+            { label: "About", action: () => setPage("about") },
+          ].map(item => (
+            <div key={item.label} style={styles.navItem}
+              onClick={item.action}
               onMouseEnter={e => e.target.style.background = "rgba(0,0,0,0.2)"}
               onMouseLeave={e => e.target.style.background = "transparent"}>
-              {item}
+              {item.label}
             </div>
           ))}
           {userName && (
