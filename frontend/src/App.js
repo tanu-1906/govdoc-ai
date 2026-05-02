@@ -487,8 +487,8 @@ export default function App() {
   
 
   
-  return null;   // ← this must be the LAST line
-} return (
+  return null;   
+} 
     <div style={styles.page}>
       <GovHeader />
       <div style={styles.main}>
