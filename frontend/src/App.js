@@ -81,6 +81,20 @@ export default function App() {
     { id: "APP005", name: "Vikram Joshi", service: "Income Certificate", score: 45, status: "Rejected", doc: "Aadhaar (blurry)" },
   ]);
 
+  // ── MARKS VERIFICATION STATE ──────────────────────────────────────────────
+  const [marksForm, setMarksForm] = useState({ studentName: "", rollNo: "", collegeName: "", year: "", branch: "" });
+  const [marksFile, setMarksFile] = useState(null);
+  const [marksResult, setMarksResult] = useState(null);
+  const [marksLoading, setMarksLoading] = useState(false);
+  const [marksMsg, setMarksMsg] = useState("");
+  const [marksApps, setMarksApps] = useState([
+    { id: "MRK001", name: "Tanushri Choudhari", college: "MMIT Lohgaon", roll: "21AI045", year: "SE", branch: "AI & DS", score: 92, status: "Verified", checks: { name: true, roll: true, college: true, sign: true, seal: true } },
+    { id: "MRK002", name: "Rohan Mehta", college: "PICT Pune", roll: "21CS102", year: "TE", branch: "CSE", score: 74, status: "Pending", checks: { name: true, roll: true, college: true, sign: false, seal: true } },
+    { id: "MRK003", name: "Pooja Raut", college: "VIT Pune", roll: "20ME055", year: "BE", branch: "Mech", score: 41, status: "Rejected", checks: { name: true, roll: false, college: false, sign: false, seal: false } },
+    { id: "MRK004", name: "Arjun Patil", college: "COEP Pune", roll: "22EC011", year: "FE", branch: "E&TC", score: 88, status: "Pending", checks: { name: true, roll: true, college: true, sign: true, seal: false } },
+  ]);
+  const [marksOfficerComment, setMarksOfficerComment] = useState({});
+
   const main = { maxWidth: 900, margin: "0 auto", padding: "24px 16px" };
 
   async function register() {
@@ -157,6 +171,39 @@ export default function App() {
     setOfficerApps(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a));
   }
 
+  // ── MARKS VERIFICATION FUNCTIONS ─────────────────────────────────────────
+  function verifyMarks() {
+    const { studentName, rollNo, collegeName } = marksForm;
+    if (!studentName || !rollNo || !collegeName) { setMarksMsg("Please fill all required fields."); return; }
+    if (!marksFile) { setMarksMsg("Please upload the marksheet file."); return; }
+    setMarksLoading(true); setMarksMsg("🤖 AI is analysing your marksheet...");
+    setTimeout(() => {
+      const nameOk = studentName.trim().length > 2;
+      const rollOk = /^[0-9]{2}[A-Z]{2}[0-9]{3}$/.test(rollNo.trim().toUpperCase());
+      const collegeOk = collegeName.trim().length > 3;
+      const signOk = Math.random() > 0.25;
+      const sealOk = Math.random() > 0.2;
+      const checks = { name: nameOk, roll: rollOk, college: collegeOk, sign: signOk, seal: sealOk };
+      const passed = Object.values(checks).filter(Boolean).length;
+      const aiScore = Math.round((passed / 5) * 100 * (0.85 + Math.random() * 0.15));
+      const status = aiScore >= 85 ? "Auto-Verified" : aiScore >= 60 ? "Pending Officer Review" : "Rejected";
+      const newEntry = {
+        id: "MRK" + String(marksApps.length + 5).padStart(3, "0"),
+        name: studentName, college: collegeName, roll: rollNo.toUpperCase(),
+        year: marksForm.year, branch: marksForm.branch, score: aiScore, status, checks,
+      };
+      setMarksApps(prev => [newEntry, ...prev]);
+      setMarksResult({ ...newEntry });
+      setMarksLoading(false);
+      setMarksMsg("");
+      setPage("marksResult");
+    }, 2200);
+  }
+
+  function updateMarksApp(id, newStatus) {
+    setMarksApps(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a));
+  }
+
   function Header() {
     return (
       <div>
@@ -192,6 +239,7 @@ export default function App() {
             { label: "Home", go: "home" },
             { label: "Services", go: userId ? "apply" : "login" },
             { label: "Track Application", go: userId ? "dashboard" : "login" },
+            { label: "🎓 Marks Verify", go: userId ? "marks" : "login" },
             { label: "Help & Support", go: "help" },
             { label: "About", go: "about" },
           ].map(item => (
@@ -242,6 +290,7 @@ export default function App() {
           <div style={{ display: "flex", gap: 12 }}>
             <button onClick={() => setPage("register")} style={{ background: C.orange, color: C.white, border: "none", padding: "10px 20px", borderRadius: 3, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>📋 Register as Citizen</button>
             <button onClick={() => setPage("login")} style={{ background: "transparent", border: "2px solid " + C.white, color: C.white, padding: "10px 20px", borderRadius: 3, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🔐 Citizen Login</button>
+            <button onClick={() => setPage(userId ? "marks" : "login")} style={{ background: "#1a7a4a", border: "none", color: C.white, padding: "10px 20px", borderRadius: 3, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🎓 Marks Verification</button>
           </div>
         </div>
         <Card title="📋 Available Services">
@@ -253,6 +302,11 @@ export default function App() {
                 <div style={{ fontSize: 12, fontWeight: "bold", color: C.navy }}>{s.label}</div>
               </div>
             ))}
+            <div onClick={() => setPage(userId ? "marks" : "login")}
+              style={{ border: "2px solid " + C.green, borderRadius: 4, padding: "14px 10px", textAlign: "center", cursor: "pointer", background: "#f0fff6" }}>
+              <div style={{ fontSize: 28, marginBottom: 6 }}>🎓</div>
+              <div style={{ fontSize: 12, fontWeight: "bold", color: C.green }}>Marks Verification</div>
+            </div>
           </div>
         </Card>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
@@ -637,6 +691,10 @@ export default function App() {
             </div>
           ))}
         </div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+          <button style={{ background: C.green, color: C.white, border: "none", padding: "10px 20px", borderRadius: 3, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}
+            onClick={() => setPage("marksOfficer")}>🎓 Review Marks Verifications ({marksApps.filter(a => a.status === "Pending" || a.status === "Pending Officer Review").length} Pending)</button>
+        </div>
         <Card title="🧑‍💼 Officer Dashboard — Applications for Review">
           {officerApps.map(app => (
             <div key={app.id} style={{ border: "1px solid #e0e0e0", borderRadius: 4, padding: 16, marginBottom: 16, background: "#fafafa" }}>
@@ -685,6 +743,263 @@ export default function App() {
           ))}
         </Card>
         <Btn label="← Back to Home" onClick={() => setPage("home")} color="#888" />
+      </div>
+      <Footer />
+    </div>
+  );
+
+  // ── MARKS VERIFICATION UPLOAD PAGE ──────────────────────────────────────
+  if (page === "marks") return (
+    <div style={{ minHeight: "100vh", background: C.light, fontFamily: "Arial, sans-serif" }}>
+      <Header />
+      <div style={main}>
+        <Card title="🎓 College Marks Verification — कॉलेज मार्क्स वेरिफिकेशन">
+          <div style={{ background: "linear-gradient(135deg,#1a7a4a,#0f4d2e)", borderRadius: 4, padding: 16, marginBottom: 20, color: C.white }}>
+            <div style={{ fontWeight: "bold", fontSize: 15, marginBottom: 4 }}>AI-Powered Marksheet Verification</div>
+            <div style={{ fontSize: 12, color: "#a8e6c4" }}>Upload your marksheet and fill in your details. Our AI will verify authenticity, check college name, roll number, signatures & official seal.</div>
+          </div>
+          <Alert msg={marksMsg} type={marksMsg.includes("fill") || marksMsg.includes("upload") ? "error" : "info"} />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <Input label="Student Full Name *" value={marksForm.studentName} placeholder="As printed on marksheet" onChange={e => setMarksForm({ ...marksForm, studentName: e.target.value })} />
+            <Input label="Roll Number *" value={marksForm.rollNo} placeholder="e.g. 21AI045" onChange={e => setMarksForm({ ...marksForm, rollNo: e.target.value })} />
+            <Input label="College Name *" value={marksForm.collegeName} placeholder="e.g. MMIT Lohgaon" onChange={e => setMarksForm({ ...marksForm, collegeName: e.target.value })} />
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: "block", fontSize: 13, fontWeight: "bold", color: C.navy, marginBottom: 5 }}>Academic Year</label>
+              <select style={{ width: "100%", padding: "10px 12px", border: "1px solid #ccc", borderRadius: 3, fontSize: 14, boxSizing: "border-box" }}
+                value={marksForm.year} onChange={e => setMarksForm({ ...marksForm, year: e.target.value })}>
+                {["FE", "SE", "TE", "BE"].map(y => <option key={y}>{y}</option>)}
+              </select>
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: "block", fontSize: 13, fontWeight: "bold", color: C.navy, marginBottom: 5 }}>Branch / Department</label>
+              <select style={{ width: "100%", padding: "10px 12px", border: "1px solid #ccc", borderRadius: 3, fontSize: 14, boxSizing: "border-box" }}
+                value={marksForm.branch} onChange={e => setMarksForm({ ...marksForm, branch: e.target.value })}>
+                {["AI & DS", "CSE", "IT", "Mech", "Civil", "E&TC", "Electrical"].map(b => <option key={b}>{b}</option>)}
+              </select>
+            </div>
+          </div>
+          <div style={{ border: "2px dashed #1a7a4a", borderRadius: 4, padding: 24, textAlign: "center", marginBottom: 16, background: "#f0fff6" }}>
+            <div style={{ fontSize: 36, marginBottom: 8 }}>📄</div>
+            <div style={{ fontSize: 13, color: C.gray, marginBottom: 12 }}>Upload Marksheet (PDF, JPG, PNG)</div>
+            {marksFile && <div style={{ fontSize: 12, color: C.green, marginBottom: 8, fontWeight: "bold" }}>✅ Selected: {marksFile.name}</div>}
+            <input type="file" accept=".pdf,.jpg,.jpeg,.png" id="marksFile" style={{ display: "none" }} onChange={e => { setMarksFile(e.target.files[0]); setMarksMsg(""); }} />
+            <label htmlFor="marksFile" style={{ background: C.green, color: C.white, padding: "10px 24px", borderRadius: 3, cursor: "pointer", fontSize: 14, fontWeight: "bold" }}>
+              {marksFile ? "Change File" : "Choose Marksheet"}
+            </label>
+          </div>
+          <div style={{ background: "#fff3cd", padding: 12, borderRadius: 3, fontSize: 12, marginBottom: 16 }}>
+            ⚠️ Roll Number format: <strong>21AI045</strong> (2-digit year + 2-letter branch code + 3 digits). Upload a clear scan for best AI accuracy.
+          </div>
+          <Btn label={marksLoading ? "🤖 AI Verifying Marksheet..." : "🔍 Run AI Marks Verification"} onClick={verifyMarks} disabled={marksLoading} color={C.green} />
+          <Btn label="View My Marks History" onClick={() => setPage("marksDash")} color={C.navy} />
+          <Btn label="Back to Dashboard" onClick={() => setPage("dashboard")} color="#888" />
+        </Card>
+        <Card title="📋 What AI Checks in Your Marksheet">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
+            {[
+              ["🧑‍🎓", "Student Name", "Matches name printed on marksheet"],
+              ["🔢", "Roll Number", "Validates format & college assignment"],
+              ["🏫", "College Name", "Verifies registered institution name"],
+              ["✍️", "Official Signature", "AI detects controller of exam's signature"],
+              ["🔏", "University Seal", "Checks for official university stamp/seal"],
+              ["🔍", "Tamper Detection", "Detects any digital or physical alterations"],
+            ].map(([icon, title, desc]) => (
+              <div key={title} style={{ border: "1px solid #d4edda", borderRadius: 4, padding: 12, textAlign: "center", background: "#f0fff6" }}>
+                <div style={{ fontSize: 24, marginBottom: 6 }}>{icon}</div>
+                <div style={{ fontWeight: "bold", color: C.green, fontSize: 13 }}>{title}</div>
+                <div style={{ fontSize: 11, color: C.gray, marginTop: 4 }}>{desc}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+      <Footer />
+    </div>
+  );
+
+  // ── MARKS RESULT PAGE ────────────────────────────────────────────────────
+  if (page === "marksResult" && marksResult) return (
+    <div style={{ minHeight: "100vh", background: C.light, fontFamily: "Arial, sans-serif" }}>
+      <Header />
+      <div style={main}>
+        <Card title={"🎓 AI Marks Verification Result — " + marksResult.id}>
+          <div style={{ textAlign: "center", padding: "20px 0", borderBottom: "1px solid #eee", marginBottom: 20 }}>
+            <div style={{ fontSize: 64, fontWeight: "bold", color: marksResult.score >= 85 ? C.green : marksResult.score >= 60 ? C.orange : C.red }}>
+              {marksResult.score}%
+            </div>
+            <div style={{ fontSize: 14, color: C.gray }}>AI Authenticity Score</div>
+            <div style={{ marginTop: 10 }}>
+              <span style={{
+                display: "inline-block", padding: "5px 16px", borderRadius: 12, fontSize: 13, fontWeight: "bold",
+                background: marksResult.status === "Auto-Verified" ? "#d4edda" : marksResult.status === "Rejected" ? "#f8d7da" : "#fff3cd",
+                color: marksResult.status === "Auto-Verified" ? C.green : marksResult.status === "Rejected" ? C.red : "#856404"
+              }}>{marksResult.status}</span>
+            </div>
+            <div style={{ marginTop: 10, fontSize: 13, color: C.navy, fontWeight: "bold" }}>
+              {marksResult.score >= 85 ? "✅ Marksheet is Authentic — Auto-Verified" : marksResult.score >= 60 ? "⏳ Sent for Officer Review" : "❌ Marksheet may be tampered — Rejected"}
+            </div>
+          </div>
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ fontWeight: "bold", color: C.navy, marginBottom: 12 }}>Verification Checks</div>
+            {[
+              ["🧑‍🎓 Student Name Match", marksResult.checks?.name],
+              ["🔢 Roll Number Valid", marksResult.checks?.roll],
+              ["🏫 College Name Verified", marksResult.checks?.college],
+              ["✍️ Signature Detected", marksResult.checks?.sign],
+              ["🔏 University Seal Found", marksResult.checks?.seal],
+            ].map(([label, passed]) => (
+              <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #eee", fontSize: 13 }}>
+                <span>{label}</span>
+                <span style={{ fontWeight: "bold", color: passed ? C.green : C.red }}>{passed ? "✅ Passed" : "❌ Failed"}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ background: "#f8f9fa", padding: 14, borderRadius: 3, fontSize: 13, marginBottom: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {[["Verification ID", marksResult.id], ["Student", marksResult.name], ["College", marksResult.college], ["Roll No", marksResult.roll], ["Year", marksResult.year], ["Branch", marksResult.branch]].map(([l, v]) => (
+                <div key={l}><span style={{ color: C.gray }}>{l}: </span><strong style={{ color: C.navy }}>{v}</strong></div>
+              ))}
+            </div>
+          </div>
+          {marksResult.status === "Pending Officer Review" && (
+            <div style={{ background: "#fff3cd", padding: 12, borderRadius: 3, marginBottom: 16, fontSize: 13 }}>
+              📋 Your marksheet has been sent to <strong>Officer Rajesh Kumar, PMC</strong> for manual review. You will be notified within 3 working days.
+            </div>
+          )}
+          <Btn label="Submit Another Marksheet" onClick={() => { setMarksResult(null); setMarksForm({ studentName: "", rollNo: "", collegeName: "", year: "FE", branch: "AI & DS" }); setMarksFile(null); setPage("marks"); }} color={C.green} />
+          <Btn label="View Marks History" onClick={() => setPage("marksDash")} color={C.navy} />
+          <Btn label="Back to Dashboard" onClick={() => setPage("dashboard")} color="#888" />
+        </Card>
+      </div>
+      <Footer />
+    </div>
+  );
+
+  // ── MARKS STUDENT DASHBOARD PAGE ─────────────────────────────────────────
+  if (page === "marksDash") return (
+    <div style={{ minHeight: "100vh", background: C.light, fontFamily: "Arial, sans-serif" }}>
+      <Header />
+      <div style={main}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 20 }}>
+          {[
+            { label: "Total Submitted", value: marksApps.length, icon: "🎓", color: C.navy },
+            { label: "Verified", value: marksApps.filter(a => a.status === "Auto-Verified" || a.status === "Verified").length, icon: "✅", color: C.green },
+            { label: "Under Review", value: marksApps.filter(a => a.status === "Pending" || a.status === "Pending Officer Review").length, icon: "⏳", color: C.orange },
+            { label: "Rejected", value: marksApps.filter(a => a.status === "Rejected").length, icon: "❌", color: C.red },
+          ].map(stat => (
+            <div key={stat.label} style={{ background: C.white, borderRadius: 4, padding: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.12)", borderTop: "4px solid " + stat.color, textAlign: "center" }}>
+              <div style={{ fontSize: 28 }}>{stat.icon}</div>
+              <div style={{ fontSize: 24, fontWeight: "bold", color: stat.color }}>{stat.value}</div>
+              <div style={{ fontSize: 12, color: C.gray }}>{stat.label}</div>
+            </div>
+          ))}
+        </div>
+        <Card title="🎓 My Marks Verification History">
+          {marksApps.map(app => (
+            <div key={app.id} style={{ border: "1px solid #d4edda", borderRadius: 4, padding: 16, marginBottom: 14, background: "#fafff9" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <div>
+                  <span style={{ fontWeight: "bold", color: C.navy, fontSize: 15 }}>{app.name}</span>
+                  <span style={{ marginLeft: 8, fontSize: 12, color: C.gray }}>#{app.id}</span>
+                </div>
+                <span style={{
+                  padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: "bold",
+                  background: (app.status === "Verified" || app.status === "Auto-Verified") ? "#d4edda" : app.status === "Rejected" ? "#f8d7da" : "#fff3cd",
+                  color: (app.status === "Verified" || app.status === "Auto-Verified") ? C.green : app.status === "Rejected" ? C.red : "#856404"
+                }}>{app.status}</span>
+              </div>
+              <div style={{ display: "flex", gap: 20, flexWrap: "wrap", fontSize: 13, marginBottom: 10 }}>
+                <span>🏫 <strong>{app.college}</strong></span>
+                <span>🔢 Roll: <strong>{app.roll}</strong></span>
+                <span>📚 {app.year} — {app.branch}</span>
+                <span>🤖 AI Score: <strong style={{ color: app.score >= 85 ? C.green : app.score >= 60 ? C.orange : C.red }}>{app.score}%</strong></span>
+              </div>
+              <div style={{ background: "#e0e0e0", borderRadius: 4, height: 6, marginBottom: 10 }}>
+                <div style={{ width: app.score + "%", height: 6, borderRadius: 4, background: app.score >= 85 ? C.green : app.score >= 60 ? C.orange : C.red }} />
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", fontSize: 12 }}>
+                {[["🧑‍🎓 Name", app.checks?.name], ["🔢 Roll", app.checks?.roll], ["🏫 College", app.checks?.college], ["✍️ Sign", app.checks?.sign], ["🔏 Seal", app.checks?.seal]].map(([l, v]) => (
+                  <span key={l} style={{ padding: "2px 8px", borderRadius: 10, background: v ? "#d4edda" : "#f8d7da", color: v ? C.green : C.red, fontWeight: "bold" }}>{l} {v ? "✅" : "❌"}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </Card>
+        <Btn label="+ Verify New Marksheet" onClick={() => { setMarksForm({ studentName: "", rollNo: "", collegeName: "", year: "FE", branch: "AI & DS" }); setMarksFile(null); setPage("marks"); }} color={C.green} />
+        <Btn label="Back to Dashboard" onClick={() => setPage("dashboard")} color="#888" />
+      </div>
+      <Footer />
+    </div>
+  );
+
+  // ── MARKS OFFICER REVIEW PAGE ────────────────────────────────────────────
+  if (page === "marksOfficer") return (
+    <div style={{ minHeight: "100vh", background: C.light, fontFamily: "Arial, sans-serif" }}>
+      <Header />
+      <div style={main}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 20 }}>
+          {[
+            { label: "Total", value: marksApps.length, icon: "🎓", color: C.navy },
+            { label: "Verified", value: marksApps.filter(a => a.status === "Verified" || a.status === "Auto-Verified").length, icon: "✅", color: C.green },
+            { label: "Pending Review", value: marksApps.filter(a => a.status === "Pending" || a.status === "Pending Officer Review").length, icon: "⏳", color: C.orange },
+            { label: "Rejected", value: marksApps.filter(a => a.status === "Rejected").length, icon: "❌", color: C.red },
+          ].map(stat => (
+            <div key={stat.label} style={{ background: C.white, borderRadius: 4, padding: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.12)", borderTop: "4px solid " + stat.color }}>
+              <div style={{ fontSize: 28 }}>{stat.icon}</div>
+              <div style={{ fontSize: 24, fontWeight: "bold", color: stat.color }}>{stat.value}</div>
+              <div style={{ fontSize: 12, color: C.gray }}>{stat.label}</div>
+            </div>
+          ))}
+        </div>
+        <Card title="🧑‍💼 Officer Review — Marks Verification Applications">
+          {marksApps.map(app => (
+            <div key={app.id} style={{ border: "1px solid #e0e0e0", borderRadius: 4, padding: 16, marginBottom: 16, background: "#fafff9" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <div>
+                  <span style={{ fontWeight: "bold", color: C.navy, fontSize: 15 }}>{app.name}</span>
+                  <span style={{ marginLeft: 8, fontSize: 12, color: C.gray }}>#{app.id} | {app.college}</span>
+                </div>
+                <span style={{
+                  padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: "bold",
+                  background: (app.status === "Verified" || app.status === "Auto-Verified") ? "#d4edda" : app.status === "Rejected" ? "#f8d7da" : "#fff3cd",
+                  color: (app.status === "Verified" || app.status === "Auto-Verified") ? C.green : app.status === "Rejected" ? C.red : "#856404"
+                }}>{app.status}</span>
+              </div>
+              <div style={{ display: "flex", gap: 16, flexWrap: "wrap", fontSize: 13, marginBottom: 10 }}>
+                <span>🔢 Roll: <strong>{app.roll}</strong></span>
+                <span>📚 {app.year} — {app.branch}</span>
+                <span>🤖 AI Score: <strong style={{ color: app.score >= 85 ? C.green : app.score >= 60 ? C.orange : C.red }}>{app.score}%</strong></span>
+              </div>
+              <div style={{ background: "#e0e0e0", borderRadius: 4, height: 6, marginBottom: 10 }}>
+                <div style={{ width: app.score + "%", height: 6, borderRadius: 4, background: app.score >= 85 ? C.green : app.score >= 60 ? C.orange : C.red }} />
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", fontSize: 12, marginBottom: 12 }}>
+                {[["🧑‍🎓 Name", app.checks?.name], ["🔢 Roll", app.checks?.roll], ["🏫 College", app.checks?.college], ["✍️ Sign", app.checks?.sign], ["🔏 Seal", app.checks?.seal]].map(([l, v]) => (
+                  <span key={l} style={{ padding: "2px 8px", borderRadius: 10, background: v ? "#d4edda" : "#f8d7da", color: v ? C.green : C.red, fontWeight: "bold" }}>{l} {v ? "✅" : "❌"}</span>
+                ))}
+              </div>
+              <input
+                placeholder="Add review comment..."
+                value={marksOfficerComment[app.id] || ""}
+                onChange={e => setMarksOfficerComment({ ...marksOfficerComment, [app.id]: e.target.value })}
+                style={{ width: "100%", padding: "8px 12px", border: "1px solid #ccc", borderRadius: 3, fontSize: 13, boxSizing: "border-box", marginBottom: 10 }}
+              />
+              {(app.status === "Pending" || app.status === "Pending Officer Review") && (
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <button style={{ background: C.green, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
+                    onClick={() => { updateMarksApp(app.id, "Verified"); alert("✅ Marksheet " + app.id + " Verified!"); }}>✅ Verify</button>
+                  <button style={{ background: C.red, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
+                    onClick={() => { updateMarksApp(app.id, "Rejected"); alert("❌ Marksheet " + app.id + " Rejected!"); }}>❌ Reject</button>
+                  <button style={{ background: C.orange, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
+                    onClick={() => alert("📄 Requested original marksheet for " + app.id)}>📄 Request Original</button>
+                  <button style={{ background: C.navy, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
+                    onClick={() => alert("💬 Comment saved: " + (marksOfficerComment[app.id] || "(empty)"))}>💬 Save Comment</button>
+                </div>
+              )}
+            </div>
+          ))}
+        </Card>
+        <Btn label="← Back to Officer Dashboard" onClick={() => setPage("officer")} color="#888" />
       </div>
       <Footer />
     </div>
