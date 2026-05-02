@@ -33,6 +33,14 @@ export default function App() {
   const [statusData, setStatusData] = useState(null);
   const [regForm, setRegForm] = useState({ name: "", email: "", phone: "", city: "", state: "Maharashtra", aadhaar: "" });
   const [loginForm, setLoginForm] = useState({ email: "", phone: "" });
+  const [officerComment, setOfficerComment] = useState({});
+  const [officerApps, setOfficerApps] = useState([
+    { id: "APP001", name: "Rahul Sharma", service: "Income Certificate", score: 78, status: "Pending", doc: "Aadhaar, Salary Slip" },
+    { id: "APP002", name: "Priya Patil", service: "Domicile Certificate", score: 91, status: "Auto-Approved", doc: "Aadhaar, Address Proof" },
+    { id: "APP003", name: "Amit Desai", service: "Caste Certificate", score: 65, status: "Pending", doc: "Aadhaar, Caste Proof" },
+    { id: "APP004", name: "Sneha Kulkarni", service: "Birth Certificate", score: 88, status: "Pending", doc: "Hospital Record" },
+    { id: "APP005", name: "Vikram Joshi", service: "Income Certificate", score: 45, status: "Rejected", doc: "Aadhaar (blurry)" },
+  ]);
 
   async function register() {
     setLoading(true); setMessage("");
@@ -45,6 +53,13 @@ export default function App() {
 
   async function login() {
     setLoading(true); setMessage("");
+    // Officer login check
+    if (loginForm.email === "officer@gov.in" && loginForm.phone === "officer123") {
+      setLoading(false);
+      setUserName("Rajesh Kumar (Officer)");
+      setPage("officer");
+      return;
+    }
     const res = await fetch(`${API}/api/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(loginForm) });
     const data = await res.json();
     setLoading(false);
@@ -97,6 +112,10 @@ export default function App() {
   }
 
   function logout() { setUserId(""); setUserName(""); setDash(null); setPage("home"); }
+
+  function updateOfficerApp(id, newStatus) {
+    setOfficerApps(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a));
+  }
 
   function Header() {
     return (
@@ -218,11 +237,11 @@ export default function App() {
           <h2 style={{ margin: "0 0 8px", fontSize: 22 }}>🇮🇳 Digital India — Document Verification Portal</h2>
           <p style={{ margin: "0 0 16px", color: "#aac4e0", fontSize: 14 }}>AI-powered government document verification system. Apply for certificates, track status, and get instant AI verification.</p>
           <div style={{ display: "flex", gap: 12 }}>
-            <button onClick={() => setPage("register")} style={{ background: C.orange, color: C.white, border: "none", padding: "10px 20px", borderRadius: 3, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>Register as Citizen</button>
-            <button onClick={() => setPage("login")} style={{ background: "transparent", border: "2px solid " + C.white, color: C.white, padding: "10px 20px", borderRadius: 3, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>Citizen Login</button>
+            <button onClick={() => setPage("register")} style={{ background: C.orange, color: C.white, border: "none", padding: "10px 20px", borderRadius: 3, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>📋 Register as Citizen</button>
+            <button onClick={() => setPage("login")} style={{ background: "transparent", border: "2px solid " + C.white, color: C.white, padding: "10px 20px", borderRadius: 3, fontSize: 14, fontWeight: "bold", cursor: "pointer" }}>🔐 Citizen Login</button>
           </div>
         </div>
-        <Card title="Available Services">
+        <Card title="📋 Available Services">
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
             {SERVICES.map(s => (
               <div key={s.id} onClick={() => setPage("login")}
@@ -292,6 +311,9 @@ export default function App() {
           <Btn label={loading ? "Logging in..." : "Login to Portal"} onClick={login} disabled={loading} />
           <Btn label="New citizen? Register here" onClick={() => setPage("register")} color="#888" />
           <Btn label="Back to Home" onClick={() => setPage("home")} color="#555" />
+          <div style={{ marginTop: 16, padding: 12, background: "#f0f4ff", borderRadius: 4, fontSize: 12, color: C.gray }}>
+            <strong style={{ color: C.navy }}>🧑‍💼 Officer Login:</strong> Use email <strong>officer@gov.in</strong> and mobile <strong>officer123</strong>
+          </div>
         </Card>
       </div>
       <Footer />
@@ -483,104 +505,7 @@ export default function App() {
   );
 
   // HELP PAGE
-
-  
-
-  
-  return null;   
-} 
-    <div style={styles.page}>
-      <GovHeader />
-      <div style={styles.main}>
-        {/* Stats Row */}
-        <div style={{ display: "flex", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
-          {[
-            { label: "Pending Review", value: "12", icon: "⏳", color: "#ff9800" },
-            { label: "Approved Today", value: "8", icon: "✅", color: "#4caf50" },
-            { label: "Rejected Today", value: "3", icon: "❌", color: "#f44336" },
-            { label: "Avg AI Score", value: "82%", icon: "🤖", color: COLORS.navyBlue },
-          ].map(stat => (
-            <div key={stat.label} style={{ flex: 1, minWidth: 150, background: "#fff", borderRadius: 8, padding: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.08)", borderTop: `4px solid ${stat.color}` }}>
-              <div style={{ fontSize: 28 }}>{stat.icon}</div>
-              <div style={{ fontSize: 28, fontWeight: "bold", color: stat.color }}>{stat.value}</div>
-              <div style={{ fontSize: 12, color: COLORS.gray }}>{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Applications Table */}
-        <div style={styles.card}>
-          <div style={styles.cardHeader}>🧑‍💼 Officer Dashboard — Pending Applications</div>
-          <div style={styles.cardBody}>
-            {[
-              { id: "APP001", name: "Rahul Sharma", service: "Income Certificate", score: 78, status: "Pending", doc: "Aadhaar, Salary Slip" },
-              { id: "APP002", name: "Priya Patil", service: "Domicile Certificate", score: 91, status: "Auto-Approved", doc: "Aadhaar, Address Proof" },
-              { id: "APP003", name: "Amit Desai", service: "Caste Certificate", score: 65, status: "Pending", doc: "Aadhaar, Caste Proof" },
-              { id: "APP004", name: "Sneha Kulkarni", service: "Birth Certificate", score: 88, status: "Pending", doc: "Hospital Record" },
-              { id: "APP005", name: "Vikram Joshi", service: "Income Certificate", score: 45, status: "Rejected", doc: "Aadhaar (blurry)" },
-            ].map(app => (
-              <div key={app.id} style={{ border: "1px solid #e0e0e0", borderRadius: 8, padding: 16, marginBottom: 16, background: "#fafafa" }}>
-                {/* Top Row */}
-                <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
-                  <div>
-                    <span style={{ fontWeight: "bold", color: COLORS.navyBlue, fontSize: 15 }}>{app.name}</span>
-                    <span style={{ marginLeft: 8, fontSize: 12, color: COLORS.gray }}>#{app.id}</span>
-                  </div>
-                  <span style={{
-                    padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: "bold",
-                    background: app.status === "Auto-Approved" ? "#e8f5e9" : app.status === "Rejected" ? "#ffebee" : "#fff3e0",
-                    color: app.status === "Auto-Approved" ? "#4caf50" : app.status === "Rejected" ? "#f44336" : "#ff9800"
-                  }}>{app.status}</span>
-                </div>
-
-                {/* Details */}
-                <div style={{ display: "flex", gap: 24, flexWrap: "wrap", marginBottom: 12, fontSize: 13 }}>
-                  <span>📋 <b>Service:</b> {app.service}</span>
-                  <span>📄 <b>Docs:</b> {app.doc}</span>
-                  <span>🤖 <b>AI Score:</b>
-                    <span style={{
-                      marginLeft: 6, fontWeight: "bold",
-                      color: app.score >= 85 ? "#4caf50" : app.score >= 70 ? "#ff9800" : "#f44336"
-                    }}>{app.score}%</span>
-                  </span>
-                </div>
-
-                {/* AI Score Bar */}
-                <div style={{ background: "#e0e0e0", borderRadius: 4, height: 6, marginBottom: 12 }}>
-                  <div style={{
-                    width: `${app.score}%`, height: 6, borderRadius: 4,
-                    background: app.score >= 85 ? "#4caf50" : app.score >= 70 ? "#ff9800" : "#f44336"
-                  }} />
-                </div>
-
-                {/* Action Buttons */}
-                {app.status === "Pending" && (
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                    <button style={{ ...styles.btnPrimary, background: "#4caf50", padding: "8px 16px", fontSize: 13 }}
-                      onClick={() => alert(`✅ APP ${app.id} Approved!`)}>✅ Approve</button>
-                    <button style={{ ...styles.btnPrimary, background: "#f44336", padding: "8px 16px", fontSize: 13 }}
-                      onClick={() => alert(`❌ APP ${app.id} Rejected!`)}>❌ Reject</button>
-                    <button style={{ ...styles.btnPrimary, background: "#ff9800", padding: "8px 16px", fontSize: 13 }}
-                      onClick={() => alert(`📄 Requested more documents for ${app.id}`)}>📄 Request Docs</button>
-                    <button style={{ ...styles.btnPrimary, background: COLORS.navyBlue, padding: "8px 16px", fontSize: 13 }}
-                      onClick={() => {
-                        const comment = prompt(`Add review comment for ${app.id}:`);
-                        if (comment) alert(`💬 Comment saved for ${app.id}: "${comment}"`);
-                      }}>💬 Add Comment</button>
-                    <button style={{ ...styles.btnPrimary, background: "#9c27b0", padding: "8px 16px", fontSize: 13 }}
-                      onClick={() => alert(`👤 ${app.id} assigned to Rajesh Kumar, PMC`)}>👤 Assign Officer</button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <button style={styles.btnPrimary} onClick={() => setPage("home")}>← Back to Home</button>
-      </div>
-      <GovFooter />
-    </div>
-  );
+  if (page === "help") return (
     <div style={{ minHeight: "100vh", background: C.light, fontFamily: "Arial, sans-serif" }}>
       <Header />
       <div style={main}>
@@ -685,6 +610,102 @@ export default function App() {
           </div>
           <Btn label="Back to Home" onClick={() => setPage("home")} />
         </Card>
+      </div>
+      <Footer />
+    </div>
+  );
+
+  // OFFICER DASHBOARD PAGE
+  if (page === "officer") return (
+    <div style={{ minHeight: "100vh", background: C.light, fontFamily: "Arial, sans-serif" }}>
+      <Header />
+      <div style={main}>
+        {/* Stats Row */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 24 }}>
+          {[
+            { label: "Pending Review", value: officerApps.filter(a => a.status === "Pending").length, icon: "⏳", color: C.orange },
+            { label: "Approved", value: officerApps.filter(a => a.status === "Approved").length, icon: "✅", color: C.green },
+            { label: "Rejected", value: officerApps.filter(a => a.status === "Rejected").length, icon: "❌", color: C.red },
+            { label: "Avg AI Score", value: Math.round(officerApps.reduce((s, a) => s + a.score, 0) / officerApps.length) + "%", icon: "🤖", color: C.navy },
+          ].map(stat => (
+            <div key={stat.label} style={{ background: C.white, borderRadius: 4, padding: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.12)", borderTop: "4px solid " + stat.color }}>
+              <div style={{ fontSize: 28 }}>{stat.icon}</div>
+              <div style={{ fontSize: 26, fontWeight: "bold", color: stat.color }}>{stat.value}</div>
+              <div style={{ fontSize: 12, color: C.gray }}>{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Applications */}
+        <Card title="🧑‍💼 Officer Dashboard — Applications for Review">
+          {officerApps.map(app => (
+            <div key={app.id} style={{ border: "1px solid #e0e0e0", borderRadius: 4, padding: 16, marginBottom: 16, background: "#fafafa" }}>
+              {/* Top Row */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <div>
+                  <span style={{ fontWeight: "bold", color: C.navy, fontSize: 15 }}>{app.name}</span>
+                  <span style={{ marginLeft: 8, fontSize: 12, color: C.gray }}>#{app.id}</span>
+                </div>
+                <span style={{
+                  padding: "4px 12px", borderRadius: 20, fontSize: 12, fontWeight: "bold",
+                  background: app.status === "Approved" || app.status === "Auto-Approved" ? "#d4edda" : app.status === "Rejected" ? "#f8d7da" : "#fff3cd",
+                  color: app.status === "Approved" || app.status === "Auto-Approved" ? C.green : app.status === "Rejected" ? C.red : "#856404"
+                }}>{app.status}</span>
+              </div>
+
+              {/* Details */}
+              <div style={{ display: "flex", gap: 20, flexWrap: "wrap", marginBottom: 10, fontSize: 13 }}>
+                <span>📋 <strong>Service:</strong> {app.service}</span>
+                <span>📄 <strong>Docs:</strong> {app.doc}</span>
+                <span>🤖 <strong>AI Score:</strong>
+                  <strong style={{ marginLeft: 4, color: app.score >= 85 ? C.green : app.score >= 70 ? C.orange : C.red }}>{app.score}%</strong>
+                </span>
+              </div>
+
+              {/* Score Bar */}
+              <div style={{ background: "#e0e0e0", borderRadius: 4, height: 6, marginBottom: 12 }}>
+                <div style={{ width: app.score + "%", height: 6, borderRadius: 4, background: app.score >= 85 ? C.green : app.score >= 70 ? C.orange : C.red }} />
+              </div>
+
+              {/* Comment box */}
+              <div style={{ marginBottom: 10 }}>
+                <input
+                  placeholder="Add review comment..."
+                  value={officerComment[app.id] || ""}
+                  onChange={e => setOfficerComment({ ...officerComment, [app.id]: e.target.value })}
+                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #ccc", borderRadius: 3, fontSize: 13, boxSizing: "border-box" }}
+                />
+              </div>
+
+              {/* Action Buttons — only for Pending */}
+              {app.status === "Pending" && (
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <button style={{ background: C.green, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
+                    onClick={() => { updateOfficerApp(app.id, "Approved"); alert("✅ " + app.id + " Approved!"); }}>
+                    ✅ Approve
+                  </button>
+                  <button style={{ background: C.red, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
+                    onClick={() => { updateOfficerApp(app.id, "Rejected"); alert("❌ " + app.id + " Rejected!"); }}>
+                    ❌ Reject
+                  </button>
+                  <button style={{ background: C.orange, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
+                    onClick={() => { updateOfficerApp(app.id, "Docs Requested"); alert("📄 More documents requested for " + app.id); }}>
+                    📄 Request Docs
+                  </button>
+                  <button style={{ background: C.navy, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
+                    onClick={() => alert("💬 Comment saved for " + app.id + ": " + (officerComment[app.id] || "(empty)"))}>
+                    💬 Save Comment
+                  </button>
+                  <button style={{ background: "#9c27b0", color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
+                    onClick={() => alert("👤 " + app.id + " assigned to Rajesh Kumar, PMC")}>
+                    👤 Assign Officer
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </Card>
+        <Btn label="← Back to Home" onClick={() => setPage("home")} color="#888" />
       </div>
       <Footer />
     </div>
