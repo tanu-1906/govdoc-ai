@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/govdoc-ai/static/css/main.e6c13ad2.css",
+    "main.js": "/govdoc-ai/static/js/main.255e95b4.js",
+    "static/js/453.825386d9.chunk.js": "/govdoc-ai/static/js/453.825386d9.chunk.js",
+    "index.html": "/govdoc-ai/index.html",
+    "main.e6c13ad2.css.map": "/govdoc-ai/static/css/main.e6c13ad2.css.map",
+    "main.255e95b4.js.map": "/govdoc-ai/static/js/main.255e95b4.js.map",
+    "453.825386d9.chunk.js.map": "/govdoc-ai/static/js/453.825386d9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.255e95b4.js"
+  ]
+}
