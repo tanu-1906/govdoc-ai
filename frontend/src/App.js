@@ -774,7 +774,75 @@ export default function App() {
     </div>
   );
 
-  if (page === "help") return (
+ if (page === "about") return (
+    <div style={styles.page}>
+      <GovHeader />
+      <div style={styles.main}>
+        <div style={styles.card}>
+          <div style={styles.cardHeader}>🏛️ About GovDoc AI Portal — हमारे बारे में</div>
+          <div style={styles.cardBody}>
+
+            {/* Mission */}
+            <div style={{ background: `linear-gradient(135deg, ${COLORS.navyBlue}, ${COLORS.darkBlue})`, borderRadius: 4, padding: 20, marginBottom: 20, color: COLORS.white }}>
+              <div style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8 }}>🎯 Our Mission</div>
+              <div style={{ fontSize: 13, lineHeight: 1.7, color: "#aac4e0" }}>
+                GovDoc AI Portal is a Digital India initiative to simplify government document verification using Artificial Intelligence. Our goal is to make government services accessible, transparent, and fast for every citizen of India.
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 20 }}>
+              {[
+                { num: "9+", label: "Services Available" },
+                { num: "95%", label: "AI Accuracy" },
+                { num: "< 1 min", label: "Verification Time" },
+                { num: "100%", label: "Secure & Encrypted" },
+              ].map(s => (
+                <div key={s.label} style={{ background: COLORS.orange, color: COLORS.white, borderRadius: 4, padding: "16px 8px", textAlign: "center" }}>
+                  <div style={{ fontSize: 22, fontWeight: "bold" }}>{s.num}</div>
+                  <div style={{ fontSize: 11, marginTop: 4 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* How it works */}
+            <div style={styles.card}>
+              <div style={styles.cardHeader}>⚙️ How It Works</div>
+              <div style={styles.cardBody}>
+                {[
+                  { step: "1", title: "Register & Login", desc: "Create your citizen account with Aadhaar and mobile number" },
+                  { step: "2", title: "Select Service", desc: "Choose from 9+ government services like Birth Certificate, PAN, Passport" },
+                  { step: "3", title: "Upload Documents", desc: "Upload clear scans of required documents in PDF, JPG or PNG" },
+                  { step: "4", title: "AI Verification", desc: "Our AI engine verifies authenticity, OCR, biometrics and fraud detection" },
+                  { step: "5", title: "Get Result", desc: "Receive instant AI score. High scores get auto-approved, others go for officer review" },
+                ].map(s => (
+                  <div key={s.step} style={{ display: "flex", gap: 16, marginBottom: 16, alignItems: "flex-start" }}>
+                    <div style={{ background: COLORS.orange, color: COLORS.white, borderRadius: "50%", width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", flexShrink: 0 }}>
+                      {s.step}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: "bold", color: COLORS.navyBlue, fontSize: 13 }}>{s.title}</div>
+                      <div style={{ fontSize: 12, color: COLORS.gray, marginTop: 2 }}>{s.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Technology */}
+            <div style={styles.card}>
+              <div style={styles.cardHeader}>💻 Technology Used</div>
+              <div style={styles.cardBody}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
+                  {[
+                    { icon: "⚛️", name: "React.js", desc: "Frontend UI" },
+                    { icon: "🐍", name: "Python Flask", desc: "Backend API" },
+                    { icon: "🍃", name: "MongoDB Atlas", desc: "Database" },
+                    { icon: "🤖", name: "AI/ML Engine", desc: "Document Verification" },
+                    { icon: "☁️", name: "Render.com", desc: "Backend Hosting" },
+                    { icon: "🚀", name: "Netlify", desc: "Frontend Hosting" },
+                  ].map(t => (
+                    <div key={t.name} style={{ border: `1px solid #ddd`, borderRadius: 4, padding: 12, textAlign: "center
     <div style={styles.page}>
       <GovHeader />
       <div style={styles.main}>
