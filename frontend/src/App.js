@@ -583,7 +583,7 @@ export default function App() {
           <div style={{ background: "#f0f4ff", padding: 16, borderRadius: 4, marginBottom: 16, textAlign: "center" }}>
             <div style={{ fontSize: 16, fontWeight: "bold", color: C.navy, marginBottom: 4 }}>Developed By</div>
             <div style={{ fontSize: 14, color: C.orange, fontWeight: "bold" }}>Tanushri Choudhari</div>
-            <div style={{ fontSize: 12, color: C.gray }}>MMIT Lohgaon | Computer Science | 2026</div>
+            <div style={{ fontSize: 12, color: C.gray }}>MMIT Lohgaon | AI & DS | 2026</div>
             <div style={{ fontSize: 12, color: C.gray, marginTop: 4 }}>Assignment Project — AI-Based Government Document Verification System</div>
           </div>
           <Btn label="Back to Home" onClick={() => setPage("home")} />
