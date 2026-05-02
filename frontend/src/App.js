@@ -483,7 +483,16 @@ export default function App() {
   );
 
   // HELP PAGE
-  if (page === "officer") return (
+  // ... other pages ...
+
+  if (page === "about") return ( ... );
+
+  if (page === "help") return ( ... );
+
+  if (page === "officer") return ( ... );  // ← officer goes HERE
+
+  return null;   // ← this must be the LAST line
+} return (
     <div style={styles.page}>
       <GovHeader />
       <div style={styles.main}>
