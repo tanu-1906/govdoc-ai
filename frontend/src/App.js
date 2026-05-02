@@ -842,7 +842,7 @@ export default function App() {
                     { icon: "☁️", name: "Render.com", desc: "Backend Hosting" },
                    { icon: "N", name: "Netlify", desc: "Frontend Hosting" },
                   ].map(t => (
-                    <div key={t.name} style={{ border: `1px solid #ddd`, borderRadius: 4, padding: 12, textAlign: "center
+                    <div key={t.name} style={{ border: "1px solid #ddd", borderRadius: 4, padding: 12, textAlign: "center" }}>
     <div style={styles.page}>
       <GovHeader />
       <div style={styles.main}>
