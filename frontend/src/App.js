@@ -20,6 +20,45 @@ const SERVICES = [
   { id: "passport", label: "Passport", icon: "✈️" },
 ];
 
+// ─── COMPONENTS OUTSIDE APP (fixes input focus bug) ───────────────────────────
+
+function Card({ title, children }) {
+  return (
+    <div style={{ background: C.white, borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.12)", marginBottom: 20, overflow: "hidden" }}>
+      <div style={{ background: C.navy, color: C.white, padding: "12px 20px", fontSize: 15, fontWeight: "bold", borderLeft: "5px solid " + C.orange }}>{title}</div>
+      <div style={{ padding: 20 }}>{children}</div>
+    </div>
+  );
+}
+
+function Btn({ label, onClick, color, disabled }) {
+  return (
+    <button onClick={onClick} disabled={disabled}
+      style={{ background: color || C.navy, color: C.white, border: "none", padding: "11px 28px", borderRadius: 3, fontSize: 14, fontWeight: "bold", cursor: "pointer", width: "100%", marginTop: 8, opacity: disabled ? 0.6 : 1 }}>
+      {label}
+    </button>
+  );
+}
+
+function Input({ label, value, onChange, placeholder }) {
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <label style={{ display: "block", fontSize: 13, fontWeight: "bold", color: C.navy, marginBottom: 5 }}>{label}</label>
+      <input style={{ width: "100%", padding: "10px 12px", border: "1px solid #ccc", borderRadius: 3, fontSize: 14, boxSizing: "border-box" }}
+        placeholder={placeholder} value={value} onChange={onChange} />
+    </div>
+  );
+}
+
+function Alert({ msg, type }) {
+  if (!msg) return null;
+  const bg = type === "error" ? "#f8d7da" : type === "success" ? "#d4edda" : "#cce5ff";
+  const col = type === "error" ? "#721c24" : type === "success" ? "#155724" : "#004085";
+  return <div style={{ padding: "10px 16px", borderRadius: 3, marginBottom: 14, fontSize: 13, background: bg, color: col, border: "1px solid #ccc" }}>{msg}</div>;
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+
 export default function App() {
   const [page, setPage] = useState("home");
   const [userId, setUserId] = useState("");
@@ -42,6 +81,8 @@ export default function App() {
     { id: "APP005", name: "Vikram Joshi", service: "Income Certificate", score: 45, status: "Rejected", doc: "Aadhaar (blurry)" },
   ]);
 
+  const main = { maxWidth: 900, margin: "0 auto", padding: "24px 16px" };
+
   async function register() {
     setLoading(true); setMessage("");
     const res = await fetch(`${API}/api/register`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(regForm) });
@@ -53,7 +94,6 @@ export default function App() {
 
   async function login() {
     setLoading(true); setMessage("");
-    // Officer login check
     if (loginForm.email === "officer@gov.in" && loginForm.phone === "officer123") {
       setLoading(false);
       setUserName("Rajesh Kumar (Officer)");
@@ -191,43 +231,6 @@ export default function App() {
     );
   }
 
-  function Card({ title, children }) {
-    return (
-      <div style={{ background: C.white, borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.12)", marginBottom: 20, overflow: "hidden" }}>
-        <div style={{ background: C.navy, color: C.white, padding: "12px 20px", fontSize: 15, fontWeight: "bold", borderLeft: "5px solid " + C.orange }}>{title}</div>
-        <div style={{ padding: 20 }}>{children}</div>
-      </div>
-    );
-  }
-
-  function Btn({ label, onClick, color, disabled }) {
-    return (
-      <button onClick={onClick} disabled={disabled}
-        style={{ background: color || C.navy, color: C.white, border: "none", padding: "11px 28px", borderRadius: 3, fontSize: 14, fontWeight: "bold", cursor: "pointer", width: "100%", marginTop: 8, opacity: disabled ? 0.6 : 1 }}>
-        {label}
-      </button>
-    );
-  }
-
-  function Input({ label, value, onChange, placeholder }) {
-    return (
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ display: "block", fontSize: 13, fontWeight: "bold", color: C.navy, marginBottom: 5 }}>{label}</label>
-        <input style={{ width: "100%", padding: "10px 12px", border: "1px solid #ccc", borderRadius: 3, fontSize: 14, boxSizing: "border-box" }}
-          placeholder={placeholder} value={value} onChange={onChange} />
-      </div>
-    );
-  }
-
-  function Alert({ msg, type }) {
-    if (!msg) return null;
-    const bg = type === "error" ? "#f8d7da" : type === "success" ? "#d4edda" : "#cce5ff";
-    const col = type === "error" ? "#721c24" : type === "success" ? "#155724" : "#004085";
-    return <div style={{ padding: "10px 16px", borderRadius: 3, marginBottom: 14, fontSize: 13, background: bg, color: col, border: "1px solid #ccc" }}>{msg}</div>;
-  }
-
-  const main = { maxWidth: 900, margin: "0 auto", padding: "24px 16px" };
-
   // HOME PAGE
   if (page === "home") return (
     <div style={{ minHeight: "100vh", background: C.light, fontFamily: "Arial, sans-serif" }}>
@@ -312,7 +315,7 @@ export default function App() {
           <Btn label="New citizen? Register here" onClick={() => setPage("register")} color="#888" />
           <Btn label="Back to Home" onClick={() => setPage("home")} color="#555" />
           <div style={{ marginTop: 16, padding: 12, background: "#f0f4ff", borderRadius: 4, fontSize: 12, color: C.gray }}>
-            <strong style={{ color: C.navy }}>🧑‍💼 Officer Login:</strong> Use email <strong>officer@gov.in</strong> and mobile <strong>officer123</strong>
+            <strong style={{ color: C.navy }}>🧑‍💼 Officer Login:</strong> Email <strong>officer@gov.in</strong> | Mobile <strong>officer123</strong>
           </div>
         </Card>
       </div>
@@ -620,7 +623,6 @@ export default function App() {
     <div style={{ minHeight: "100vh", background: C.light, fontFamily: "Arial, sans-serif" }}>
       <Header />
       <div style={main}>
-        {/* Stats Row */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 24 }}>
           {[
             { label: "Pending Review", value: officerApps.filter(a => a.status === "Pending").length, icon: "⏳", color: C.orange },
@@ -635,12 +637,9 @@ export default function App() {
             </div>
           ))}
         </div>
-
-        {/* Applications */}
         <Card title="🧑‍💼 Officer Dashboard — Applications for Review">
           {officerApps.map(app => (
             <div key={app.id} style={{ border: "1px solid #e0e0e0", borderRadius: 4, padding: 16, marginBottom: 16, background: "#fafafa" }}>
-              {/* Top Row */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                 <div>
                   <span style={{ fontWeight: "bold", color: C.navy, fontSize: 15 }}>{app.name}</span>
@@ -652,8 +651,6 @@ export default function App() {
                   color: app.status === "Approved" || app.status === "Auto-Approved" ? C.green : app.status === "Rejected" ? C.red : "#856404"
                 }}>{app.status}</span>
               </div>
-
-              {/* Details */}
               <div style={{ display: "flex", gap: 20, flexWrap: "wrap", marginBottom: 10, fontSize: 13 }}>
                 <span>📋 <strong>Service:</strong> {app.service}</span>
                 <span>📄 <strong>Docs:</strong> {app.doc}</span>
@@ -661,45 +658,27 @@ export default function App() {
                   <strong style={{ marginLeft: 4, color: app.score >= 85 ? C.green : app.score >= 70 ? C.orange : C.red }}>{app.score}%</strong>
                 </span>
               </div>
-
-              {/* Score Bar */}
               <div style={{ background: "#e0e0e0", borderRadius: 4, height: 6, marginBottom: 12 }}>
                 <div style={{ width: app.score + "%", height: 6, borderRadius: 4, background: app.score >= 85 ? C.green : app.score >= 70 ? C.orange : C.red }} />
               </div>
-
-              {/* Comment box */}
-              <div style={{ marginBottom: 10 }}>
-                <input
-                  placeholder="Add review comment..."
-                  value={officerComment[app.id] || ""}
-                  onChange={e => setOfficerComment({ ...officerComment, [app.id]: e.target.value })}
-                  style={{ width: "100%", padding: "8px 12px", border: "1px solid #ccc", borderRadius: 3, fontSize: 13, boxSizing: "border-box" }}
-                />
-              </div>
-
-              {/* Action Buttons — only for Pending */}
+              <input
+                placeholder="Add review comment..."
+                value={officerComment[app.id] || ""}
+                onChange={e => setOfficerComment({ ...officerComment, [app.id]: e.target.value })}
+                style={{ width: "100%", padding: "8px 12px", border: "1px solid #ccc", borderRadius: 3, fontSize: 13, boxSizing: "border-box", marginBottom: 10 }}
+              />
               {app.status === "Pending" && (
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   <button style={{ background: C.green, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
-                    onClick={() => { updateOfficerApp(app.id, "Approved"); alert("✅ " + app.id + " Approved!"); }}>
-                    ✅ Approve
-                  </button>
+                    onClick={() => { updateOfficerApp(app.id, "Approved"); alert("✅ " + app.id + " Approved!"); }}>✅ Approve</button>
                   <button style={{ background: C.red, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
-                    onClick={() => { updateOfficerApp(app.id, "Rejected"); alert("❌ " + app.id + " Rejected!"); }}>
-                    ❌ Reject
-                  </button>
+                    onClick={() => { updateOfficerApp(app.id, "Rejected"); alert("❌ " + app.id + " Rejected!"); }}>❌ Reject</button>
                   <button style={{ background: C.orange, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
-                    onClick={() => { updateOfficerApp(app.id, "Docs Requested"); alert("📄 More documents requested for " + app.id); }}>
-                    📄 Request Docs
-                  </button>
+                    onClick={() => { updateOfficerApp(app.id, "Docs Requested"); alert("📄 More documents requested for " + app.id); }}>📄 Request Docs</button>
                   <button style={{ background: C.navy, color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
-                    onClick={() => alert("💬 Comment saved for " + app.id + ": " + (officerComment[app.id] || "(empty)"))}>
-                    💬 Save Comment
-                  </button>
+                    onClick={() => alert("💬 Comment saved: " + (officerComment[app.id] || "(empty)"))}>💬 Save Comment</button>
                   <button style={{ background: "#9c27b0", color: C.white, border: "none", padding: "8px 16px", borderRadius: 3, cursor: "pointer", fontSize: 13, fontWeight: "bold" }}
-                    onClick={() => alert("👤 " + app.id + " assigned to Rajesh Kumar, PMC")}>
-                    👤 Assign Officer
-                  </button>
+                    onClick={() => alert("👤 " + app.id + " assigned to Rajesh Kumar, PMC")}>👤 Assign Officer</button>
                 </div>
               )}
             </div>
